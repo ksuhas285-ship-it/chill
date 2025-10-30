@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-Brev - Transform Your Body & Mind</title>
+    <meta name="description" content="Join D-Brev fitness community and transform your body with expert training programs, personalized nutrition plans, and supportive community.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-light: #ffffff;
+            --text-light: #1a1a1a;
+            --accent-light: #ff6b35;
+            --secondary-light: #f4f4f4;
+            --border-light: #e0e0e0;
+            
+            --bg-dark: #0a0a0a;
+            --text-dark: #ffffff;
+            --accent-dark: #ff8555;
+            --secondary-dark: #1a1a1a;
+            --border-dark: #2a2a2a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode header {
+            background: rgba(10, 10, 10, 0.95);
+            border-bottom-color: var(--border-dark);
+        }
+
+        .header-scrolled {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 60px;
+            width: auto;
+            transition: transform 0.3s ease, opacity 0.5s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-light {
+            opacity: 1;
+        }
+
+        .logo-dark {
+            opacity: 0;
+            position: absolute;
+        }
+
+        body.dark-mode .logo-light {
+            opacity: 0;
+        }
+
+        body.dark-mode .logo-dark {
+            opacity: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .nav-links a {
+            color: var(--text-dark);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-light);
+            transition: width 0.3s ease;
+        }
+
+        body.dark-mode .nav-links a::after {
+            background: var(--accent-dark);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--border-light);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .theme-toggle {
+            border-color: var(--border-dark);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+            border-color: var(--accent-light);
+        }
+
+        body.dark-mode .theme-toggle:hover {
+            border-color: var(--accent-dark);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 6rem 2rem 2rem;
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+            transition: background 0.5s ease;
+        }
+
+        body.dark-mode .hero {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            text-align: center;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8555 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .hero p {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-bottom: 3rem;
+            opacity: 0.8;
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8555 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+            animation: fadeInUp 1s ease 0.4s backwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 4rem;
+            font-weight: 800;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            padding: 3rem 2rem;
+            background: var(--secondary-light);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .feature-card {
+            background: var(--secondary-dark);
+            border-color: var(--border-dark);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(255, 133, 85, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Programs Section */
+        .programs {
+            padding: 6rem 2rem;
+            background: var(--secondary-light);
+            transition: background 0.5s ease;
+        }
+
+        body.dark-mode .programs {
+            background: var(--secondary-dark);
+        }
+
+        .programs-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .program-card {
+            background: var(--bg-light);
+            border-radius: 25px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid var(--border-light);
+        }
+
+        body.dark-mode .program-card {
+            background: var(--bg-dark);
+            border-color: var(--border-dark);
+        }
+
+        .program-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .program-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8555 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .program-content {
+            padding: 2.5rem;
+        }
+
+        .program-content h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .program-content p {
+            opacity: 0.8;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .learn-more {
+            color: var(--accent-light);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s ease;
+        }
+
+        body.dark-mode .learn-more {
+            color: var(--accent-dark);
+        }
+
+        .learn-more:hover {
+            gap: 1rem;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.1);
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8555 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 2rem 2rem;
+            background: var(--secondary-light);
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+            transition: background 0.5s ease;
+        }
+
+        body.dark-mode footer {
+            background: var(--secondary-dark);
+            border-top-color: var(--border-dark);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin: 2rem 0;
+            list-style: none;
+        }
+
+        .social-links a {
+            font-size: 2rem;
+            transition: transform 0.3s ease, color 0.3s ease;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .social-links a {
+            color: var(--text-dark);
+        }
+
+        .social-links a:hover {
+            transform: translateY(-5px) scale(1.2);
+            color: var(--accent-light);
+        }
+
+        body.dark-mode .social-links a:hover {
+            color: var(--accent-dark);
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 3px;
+            background: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .hamburger span {
+            background: var(--text-dark);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Scroll animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .logo {
+                height: 45px;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: var(--bg-light);
+                flex-direction: column;
+                padding: 3rem;
+                transition: left 0.4s ease;
+                border-top: 1px solid var(--border-light);
+            }
+
+            body.dark-mode .nav-links {
+                background: var(--bg-dark);
+                border-top-color: var(--border-dark);
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(8px, 8px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(8px, -8px);
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .features-grid,
+            .programs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-number {
+                font-size: 3rem;
+            }
+        }
+
+        /* Parallax effect */
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* Custom cursor effect */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.2s ease;
+            display: none;
+        }
+
+        body.dark-mode .cursor-dot {
+            background: var(--accent-dark);
+        }
+
+        @media (min-width: 1024px) {
+            .cursor-dot {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor-dot" id="cursorDot"></div>
+
+    <header id="header">
+        <nav>
+            <div class="logo-container">
+                <img src="logo-light.png" alt="D-Brev Logo Light Mode" class="logo logo-light">
+                <img src="logo-dark.png" alt="D-Brev Logo Dark Mode" class="logo logo-dark">
+            </div>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#programs">Programs</a></li>
+                <li><a href="#stats">Results</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero parallax" id="home">
+            <div class="hero-content">
+                <h1>Transform Your Body & Mind</h1>
+                <p>Join the D-Brev fitness revolution and unlock your true potential</p>
+                <a href="#programs" class="cta-button">Start Your Journey</a>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <h2 class="section-title scroll-reveal">Why Choose D-Brev?</h2>
+            <div class="features-grid">
+                <div class="feature-card scroll-reveal">
+                    <span class="feature-icon">💪</span>
+                    <h3>Expert Training</h3>
+                    <p>Get personalized workout plans designed by certified professionals with years of experience in bodybuilding and fitness.</p>
+                </div>
+                <div class="feature-card scroll-reveal">
+                    <span class="feature-icon">🥗</span>
+                    <h3>Nutrition Plans</h3>
+                    <p>Custom meal plans tailored to your goals, whether you're cutting, bulking, or maintaining your perfect physique.</p>
+                </div>
+                <div class="feature-card scroll-reveal">
+                    <span class="feature-icon">📱</span>
+                    <h3>24/7 Support</h3>
+                    <p>Access to our community and coaches anytime, anywhere. Get answers to your questions when you need them most.</p>
+                </div>
+                <div class="feature-card scroll-reveal">
+                    <span class="feature-icon">📊</span>
+                    <h3>Track Progress</h3>
+                    <p>Advanced analytics and tracking tools to monitor your transformation journey and celebrate every milestone.</p>
+                </div>
+                <div class="feature-card scroll-reveal">
+                    <span class="feature-icon">🎯</span>
+                    <h3>Goal Setting</h3>
+                    <p>Strategic goal planning and achievement systems to keep you motivated and on track to success.</p>
+                </div>
+                <div class="feature-card scroll-reveal">
+                    <span class="feature-icon">🏆</span>
+                    <h3>Proven Results</h3>
+                    <p>Join thousands who have already transformed their lives with our evidence-based training methods.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="programs" id="programs">
+            <h2 class="section-title scroll-reveal">Our Programs</h2>
+            <div class="programs-grid">
+                <div class="program-card scroll-reveal">
+                    <div class="program-image">🔥</div>
+                    <div class="program-content">
+                        <h3>Beginner Program</h3>
+                        <p>Perfect for those starting their fitness journey. Build a solid foundation with proper form and technique.</p>
+                        <a href="#" class="learn-more">Learn More →</a>
+                    </div>
+                </div>
+                <div class="program-card scroll-reveal">
+                    <div class="program-image">⚡</div>
+                    <div class="program-content">
+                        <h3>Advanced Training</h3>
+                        <p>Take your fitness to the next level with advanced techniques and challenging progressive overload programs.</p>
+                        <a href="#" class="learn-more">Learn More →</a>
+                    </div>
+                </div>
+                <div class="program-card scroll-reveal">
+                    <div class="program-image">🎖️</div>
+                    <div class="program-content">
+                        <h3>Elite Coaching</h3>
+                        <p>One-on-one personalized coaching for serious athletes ready to achieve championship-level results.</p>
+                        <a href="#" class="learn-more">Learn More →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats" id="stats">
+            <h2 class="section-title scroll-reveal">Results That Speak</h2>
+            <div class="stats-grid">
+                <div class="stat-item scroll-reveal">
+                    <div class="stat-number" data-target="10000">0</div>
+                    <div class="stat-label">Members Transformed</div>
+                </div>
+                <div class="stat-item scroll-reveal">
+                    <div class="stat-number" data-target="500">0</div>
+                    <div class="stat-label">Workout Programs</div>
+                </div>
+                <div class="stat-item scroll-reveal">
+                    <div class="stat-number" data-target="98">0</div>
+                    <div class="stat-label">Success Rate %</div>
+                </div>
+                <div class="stat-item scroll-reveal">
+                    <div class="stat-number" data-target="50">0</div>
+                    <div class="stat-label">Expert Coaches</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <h3 style="font-size: 2rem; margin-bottom: 1rem;">Join the D-Brev Community</h3>
+            <p style="opacity: 0.8; margin-bottom: 2rem;">Transform your life today</p>
+            <ul class="social-links">
+                <li><a href="#" aria-label="Instagram">📷</a></li>
+                <li><a href="#" aria-label="YouTube">📺</a></li>
+                <li><a href="#" aria-label="Facebook">📘</a></li>
+                <li><a href="#" aria-label="Twitter">🐦</a></li>
+            </ul>
+            <p style="opacity: 0.6; font-size: 0.9rem;">&copy; 2025 D-Brev. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const body = document.body;
+
+        // Check for saved theme preference
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        if (currentTheme === 'dark') {
+            body.classList.add('dark-mode');
+            themeIcon.textContent = '☀️';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            themeIcon.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Header scroll effect
+        const header = document.getElementById('header');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Scroll reveal animation
+        const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+
+        const revealOnScroll = () => {
+            scrollRevealElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+
+                if (elementTop < windowHeight * 0.85) {
+                    element.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Initial check
+
+        // Animated counter for stats
+        const statNumbers = document.querySelectorAll('.stat-number');
+        let hasAnimated = false;
+
+        const animateCounters = () => {
+            const statsSection = document.getElementById('stats');
+            const statsSectionTop = statsSection.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+
+            if (statsSectionTop < windowHeight * 0.75 && !hasAnimated) {
+                hasAnimated = true;
+                
+                statNumbers.forEach(stat => {
+                    const target = parseInt(stat.getAttribute('data-target'));
+                    const duration = 2000;
+                    const increment = target / (duration / 16);
+                    let current = 0;
+
+                    const updateCounter = () => {
+                        current += increment;
+                        if (current < target) {
+                            stat.textContent = Math.floor(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            stat.textContent = target;
+                        }
+                    };
+
+                    updateCounter();
+                });
+            }
+        };
+
+        window.addEventListener('scroll', animateCounters);
+
+        // Custom cursor
+        const cursorDot = document.getElementById('cursorDot');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        const animateCursor = () => {
+            const delay = 0.1;
+            cursorX += (mouseX - cursorX) * delay;
+            cursorY += (mouseY - cursorY) * delay;
+            
+            cursorDot.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+            requestAnimationFrame(animateCursor);
+        };
+
+        animateCursor();
+
+        // Add click effect to cursor
+        document.addEventListener('click', () => {
+            cursorDot.style.transform = `translate(${cursorX}px, ${cursorY}px) scale(2)`;
+            setTimeout(() => {
+                cursorDot.style.transform = `translate(${cursorX}px, ${cursorY}px) scale(1)`;
+            }, 200);
+        });
+
+        // Smooth scroll with offset for fixed header
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    const headerHeight = header.offsetHeight;
+                    const targetPosition = targetElement.offsetTop - headerHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Add parallax effect to hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+
+        // Add floating animation to CTA button
+        const ctaButton = document.querySelector('.cta-button');
+        if (ctaButton) {
+            setInterval(() => {
+                ctaButton.style.animation = 'none';
+                setTimeout(() => {
+                    ctaButton.style.animation = 'float 3s ease-in-out infinite';
+                }, 10);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
