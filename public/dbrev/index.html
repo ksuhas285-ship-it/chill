@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-BREV - Train Smarter, Build Stronger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --dark-blue: #1e40af;
+            --light-blue: #60a5fa;
+            --bg-light: #ffffff;
+            --bg-dark: #0f172a;
+            --text-light: #1e293b;
+            --text-dark: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+
+        body.dark {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-blue);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.15s ease;
+            opacity: 0;
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10001;
+            transition: transform 0.1s ease;
+            opacity: 0;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-logo {
+            width: 120px;
+            height: 120px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        body.dark header {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .logo-container img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .contact-btn, .edit-btn, .theme-toggle {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .contact-btn:hover, .edit-btn:hover, .theme-toggle:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .edit-btn {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        body.dark .edit-btn {
+            color: var(--light-blue);
+            border-color: var(--light-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 5%;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.5s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .video-placeholder {
+            width: 90%;
+            max-width: 1000px;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(96, 165, 250, 0.1));
+            border-radius: 20px;
+            border: 2px dashed var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.8s;
+            transition: all 0.3s ease;
+        }
+
+        .video-placeholder:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Scrolling Text */
+        .scrolling-section {
+            width: 100%;
+            overflow: hidden;
+            padding: 4rem 0;
+            background: var(--primary-blue);
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 1.2s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .scrolling-text {
+            display: flex;
+            white-space: nowrap;
+            animation: scroll 20s linear infinite;
+        }
+
+        .scrolling-text span {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 900;
+            color: white;
+            margin: 0 3rem;
+            text-transform: uppercase;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Question Section */
+        .question-section {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 5%;
+            text-align: center;
+        }
+
+        .question {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .question.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cta-button {
+            padding: 1.5rem 4rem;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.3);
+        }
+
+        .cta-button.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.5);
+        }
+
+        /* Onboarding Form */
+        .onboarding-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+        }
+
+        .onboarding-form.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        body.dark .onboarding-form {
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid rgba(37, 99, 235, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        body.dark .form-group input, body.dark .form-group select {
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Dashboard Section */
+        .dashboard {
+            padding: 6rem 5% 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .dashboard.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .welcome-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(96, 165, 250, 0.05));
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+        }
+
+        .stat-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.2);
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin: 6rem 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .content-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 3rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nutrition-table {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .nutrition-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .nutrition-table th, .nutrition-table td {
+            padding: 1.2rem;
+            text-align: left;
+        }
+
+        .nutrition-table th {
+            background: var(--primary-blue);
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nutrition-table tbody tr {
+            border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nutrition-table tbody tr:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        body.dark .nutrition-table tbody tr:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .recipe-grid, .workout-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .recipe-card, .workout-card {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(96, 165, 250, 0.02));
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .recipe-card:hover, .workout-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .workout-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .workout-item {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: rgba(37, 99, 235, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border-left: 3px solid var(--primary-blue);
+        }
+
+        .workout-item:hover {
+            background: rgba(37, 99, 235, 0.1);
+            transform: translateX(5px);
+        }
+
+        .workout-item.active {
+            background: rgba(37, 99, 235, 0.15);
+        }
+
+        .workout-video {
+            margin-top: 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .workout-video.visible {
+            max-height: 400px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 4rem 5%;
+            background: var(--primary-blue);
+            color: white;
+            margin-top: 6rem;
+        }
+
+        footer h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-actions {
+                gap: 0.5rem;
+            }
+
+            .contact-btn, .edit-btn, .theme-toggle {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recipe-grid, .workout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <img src="../logo-light.png" alt="D-BREV Logo" class="loading-logo" id="loadingLogo">
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <img src="../logo-light.png" alt="D-BREV" id="headerLogo">
+        </div>
+        <div class="header-actions">
+            <button class="edit-btn hidden" id="editBtn">Edit Profile</button>
+            <a href="https://linktr.ee/dbrevv?fbclid=PAZXh0bgNhZW0CMTEAAafskl88nPJ1Qr5hPYufElVvnXlkTM6cj13RPnMRi-WWmthSHrRuBiyd8t7usw_aem_FsyJM3c75TuVmVzduwQnwg&brid=xtauy3j5JdndJmo2y1TMOw" target="_blank" class="contact-btn">Contact</a>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <h1 class="hero-title">Train Smarter<br>Build Stronger</h1>
+        <div class="video-placeholder">📹 Hero Video Placeholder</div>
+    </section>
+
+    <!-- Scrolling Text -->
+    <div class="scrolling-section">
+        <div class="scrolling-text">
+            <span>DISCIPLINE</span>
+            <span>BALANCE</span>
+            <span>REVOLUTION</span>
+            <span>DISCIPLINE</span>
+            <span>BALANCE</span>
+            <span>REVOLUTION</span>
+            <span>DISCIPLINE</span>
+            <span>BALANCE</span>
+            <span>REVOLUTION</span>
+        </div>
+    </div>
+
+    <!-- Question Section -->
+    <section class="question-section" id="questionSection">
+        <h2 class="question">Are you ready to commit to yourself?</h2>
+        <button class="cta-button" id="startBtn">Start Your Journey Now</button>
+    </section>
+
+    <!-- Onboarding Form -->
+    <section class="question-section hidden" id="onboardingSection">
+        <form class="onboarding-form" id="onboardingForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="height">Height (cm)</label>
+                <input type="number" id="height" required>
+            </div>
+            <div class="form-group">
+                <label for="weight">Weight (kg)</label>
+                <input type="number" id="weight" required>
+            </div>
+            <div class="form-group">
+                <label for="source">How did you find us?</label>
+                <select id="source" required>
+                    <option value="">Select an option</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="youtube">YouTube</option>
+                    <option value="discord">Discord</option>
+                    <option value="friends">Friend's Suggestion</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="diet">Diet Type</label>
+                <select id="diet" required>
+                    <option value="">Select diet type</option>
+                    <option value="vegetarian">Vegetarian</option>
+                    <option value="eggetarian">Eggetarian</option>
+                    <option value="nonveg">Non-Vegetarian</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="workout">Workout Type</label>
+                <select id="workout" required>
+                    <option value="">Select workout type</option>
+                    <option value="gym">Gym Workout</option>
+                    <option value="home">Home Workout</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-btn">Complete Setup</button>
+        </form>
+    </section>
+
+    <!-- Dashboard -->
+    <section class="dashboard hidden" id="dashboardSection">
+        <div class="welcome-section">
+            <h1 class="welcome-title" id="welcomeTitle">Welcome Back!</h1>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" data-value="0" id="heightStat">0</div>
+                    <div class="stat-label">Height (cm)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" data-value="0" id="weightStat">0</div>
+                    <div class="stat-label">Weight (kg)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nutrition Section -->
+        <div class="content-section" id="nutritionSection">
+            <h2 class="section-title">Your Nutrition Plan</h2>
+            <div id="nutritionContent"></div>
+            
+            <h3 class="section-title" style="margin-top: 4rem;">Recipes</h3>
+            <div class="recipe-grid" id="recipesGrid"></div>
+        </div>
+
+        <!-- Workout Section -->
+        <div class="content-section" id="workoutSection">
+            <h2 class="section-title">Your Workout Plan</h2>
+            <div class="workout-grid" id="workoutGrid"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="hidden" id="footerSection">
+        <h2>DBREV</h2>
+        <p>Train Smarter. Build Stronger.</p>
+    </footer>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.opacity = '1';
+            cursorFollower.style.opacity = '1';
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            followerX += (mouseX - followerX) * 0.15;
+            followerY += (mouseY - followerY) * 0.15;
+
+            cursor.style.transform = `translate(${cursorX - 10}px, ${cursorY - 10}px)`;
+            cursorFollower.style.transform = `translate(${followerX - 4}px, ${followerY - 4}px)`;
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const headerLogo = document.getElementById('headerLogo');
+        const loadingLogo = document.getElementById('loadingLogo');
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            const isDark = body.classList.contains('dark');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+            headerLogo.src = isDark ? '../cropped_circle_image.png' : '../logo-light.png';
+        });
+
+        // Loading Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 2000);
+        });
+
+        // Scroll Animations
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements
+        setTimeout(() => {
+            document.querySelectorAll('.question, .cta-button, .content-section').forEach(el => {
+                observer.observe(el);
+            });
+        }, 2500);
+
+        // Number Animation
+        function animateNumber(element, target, duration = 2000) {
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = Math.round(target);
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.round(current);
+                }
+            }, 16);
+        }
+
+        // Start Button
+        document.getElementById('startBtn').addEventListener('click', () => {
+            document.getElementById('questionSection').classList.add('hidden');
+            document.getElementById('onboardingSection').classList.remove('hidden');
+            setTimeout(() => {
+                document.querySelector('.onboarding-form').classList.add('visible');
+            }, 100);
+        });
+
+        // Data Storage
+        const workoutData = {
+            gym: {
+                'Monday/Thursday - Push': [
+                    { name: 'DB Incline Bench', sets: '5x10' },
+                    { name: 'Machine Press', sets: '5x15' },
+                    { name: 'Pec Dec', sets: '5x15' },
+                    { name: 'Rope Pushdown', sets: '5x20' }
+                ],
+                'Tuesday/Friday - Legs': [
+                    { name: 'Squats', sets: '4x10' },
+                    { name: 'Leg Extension', sets: '5x10' },
+                    { name: 'Leg Curls', sets: '5x10' },
+                    { name: 'Calf Raises Standing', sets: '6x25' }
+                ],
+                'Wednesday/Saturday - Back': [
+                    { name: 'Pulldown', sets: '5x10' },
+                    { name: 'Rows', sets: '5x15' },
+                    { name: 'Pullups', sets: '5x7' },
+                    { name: 'Bicep DB Curl', sets: '5x30' }
+                ]
+            },
+            home: {
+                'Monday/Thursday - Push': [
+                    { name: 'Normal Pushups', sets: '5x15' },
+                    { name: 'Close Pushups', sets: '5x15' },
+                    { name: 'Incline Pushups', sets: '5x15' }
+                ],
+                'Tuesday/Friday - Legs': [
+                    { name: 'Normal Squats', sets: '5x15' },
+                    { name: 'Jumping Squats', sets: '5x15' },
+                    { name: 'Bulgarian Squats', sets: '5x15' }
+                ],
+                'Wednesday/Saturday - Back': [
+                    { name: 'Normal Pullups', sets: '5x8' },
+                    { name: 'Chin-ups', sets: '5x8' },
+                    { name: 'Parallel Pullups', sets: '5x8' }
+                ]
+            }
+        };
+
+        const nutritionData = {
+            eggetarian: {
+                summary: { calories: '2260 kcal', protein: '116g', carbs: '210g', fat: '103g' },
+                meals: [
+                    { meal: 'Breakfast', food: '50g oats (in water) + 4 whole boiled eggs', calories: 502, protein: 32, carbs: 34, fat: 25 },
+                    { meal: 'Lunch', food: '120g paneer + 2 chapatis + 1 cup dal + 1 cup sabzi', calories: 840, protein: 41, carbs: 74, fat: 41 },
+                    { meal: 'Pre-Workout', food: '2 medium bananas', calories: 210, protein: 2, carbs: 54, fat: 0.6 },
+                    { meal: 'Dinner', food: '5 whole eggs + 2 chapatis + 1 cup sabzi', calories: 710, protein: 41, carbs: 48, fat: 37 }
+                ]
+            },
+            vegetarian: {
+                summary: { calories: '1900 kcal', protein: '92g', carbs: '226g', fat: '72g' },
+                meals: [
+                    { meal: 'Breakfast', food: '50g oats + 120g cooked soya', calories: 360, protein: 23, carbs: 42, fat: 12 },
+                    { meal: 'Lunch', food: '120g paneer + 2 chapati + dal + sabzi', calories: 840, protein: 41, carbs: 74, fat: 41 },
+                    { meal: 'Pre-Workout', food: '2 medium bananas', calories: 210, protein: 2, carbs: 54, fat: 0.6 },
+                    { meal: 'Dinner', food: '120g cooked soya + 2 chapati + sabzi', calories: 490, protein: 26, carbs: 56, fat: 19 }
+                ]
+            },
+            nonveg: {
+                summary: { calories: '2000-2260 kcal', protein: '115-135g', carbs: '200-210g', fat: '80-100g' },
+                meals: [
+                    { meal: 'Breakfast', food: '50g oats + 4 boiled eggs', calories: 502, protein: 32, carbs: 34, fat: 25 },
+                    { meal: 'Lunch (Paneer)', food: 'Ghar ka khana + 120g paneer', calories: 840, protein: 41, carbs: 74, fat: 41 },
+                    { meal: 'Lunch (Chicken)', food: 'Ghar ka khana + 120g chicken', calories: 700, protein: 52, carbs: 68, fat: 28 },
+                    { meal: 'Pre-Workout', food: '2 bananas', calories: 210, protein: 2, carbs: 54, fat: 0.6 },
+                    { meal: 'Dinner (Egg)', food: 'Ghar ka khana + 5 eggs', calories: 710, protein: 41, carbs: 48, fat: 37 },
+                    { meal: 'Dinner (Chicken)', food: 'Ghar ka khana + 120g chicken', calories: 620, protein: 50, carbs: 46, fat: 25 }
+                ]
+            }
+        };
+
+        // Form Submission
+        document.getElementById('onboardingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const userData = {
+                name: document.getElementById('name').value,
+                height: document.getElementById('height').value,
+                weight: document.getElementById('weight').value,
+                source: document.getElementById('source').value,
+                diet: document.getElementById('diet').value,
+                workout: document.getElementById('workout').value
+            };
+
+            localStorage.setItem('dbrevUser', JSON.stringify(userData));
+            showDashboard(userData);
+        });
+
+        // Edit Profile
+        document.getElementById('editBtn').addEventListener('click', () => {
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('footerSection').classList.add('hidden');
+            document.getElementById('onboardingSection').classList.remove('hidden');
+            
+            const userData = JSON.parse(localStorage.getItem('dbrevUser'));
+            document.getElementById('name').value = userData.name;
+            document.getElementById('height').value = userData.height;
+            document.getElementById('weight').value = userData.weight;
+            document.getElementById('source').value = userData.source;
+            document.getElementById('diet').value = userData.diet;
+            document.getElementById('workout').value = userData.workout;
+
+            setTimeout(() => {
+                document.querySelector('.onboarding-form').classList.add('visible');
+            }, 100);
+        });
+
+        // Show Dashboard
+        function showDashboard(userData) {
+            document.getElementById('onboardingSection').classList.add('hidden');
+            document.getElementById('heroSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('footerSection').classList.remove('hidden');
+            document.getElementById('editBtn').classList.remove('hidden');
+
+            document.getElementById('welcomeTitle').textContent = `Welcome Back, ${userData.name}!`;
+
+            setTimeout(() => {
+                document.getElementById('dashboardSection').classList.add('visible');
+                
+                // Animate stats
+                setTimeout(() => {
+                    document.querySelectorAll('.stat-card').forEach((card, i) => {
+                        setTimeout(() => {
+                            card.classList.add('visible');
+                        }, i * 200);
+                    });
+
+                    const heightStat = document.getElementById('heightStat');
+                    const weightStat = document.getElementById('weightStat');
+                    animateNumber(heightStat, parseInt(userData.height));
+                    animateNumber(weightStat, parseInt(userData.weight));
+                }, 500);
+
+                // Load nutrition
+                setTimeout(() => {
+                    loadNutrition(userData.diet);
+                    document.getElementById('nutritionSection').classList.add('visible');
+                }, 1000);
+
+                // Load workouts
+                setTimeout(() => {
+                    loadWorkouts(userData.workout);
+                    document.getElementById('workoutSection').classList.add('visible');
+                }, 1500);
+            }, 300);
+        }
+
+        // Load Nutrition
+        function loadNutrition(dietType) {
+            const nutrition = nutritionData[dietType];
+            const nutritionContent = document.getElementById('nutritionContent');
+
+            let html = `
+                <div class="nutrition-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Meal</th>
+                                <th>Food Items</th>
+                                <th>Calories</th>
+                                <th>Protein (g)</th>
+                                <th>Carbs (g)</th>
+                                <th>Fat (g)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            nutrition.meals.forEach(meal => {
+                html += `
+                    <tr>
+                        <td><strong>${meal.meal}</strong></td>
+                        <td>${meal.food}</td>
+                        <td>${meal.calories}</td>
+                        <td>${meal.protein}</td>
+                        <td>${meal.carbs}</td>
+                        <td>${meal.fat}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                <div style="text-align: center; padding: 2rem; background: rgba(37, 99, 235, 0.1); border-radius: 15px; margin-top: 2rem;">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 1rem;">Daily Summary</h3>
+                    <p><strong>Total Calories:</strong> ${nutrition.summary.calories}</p>
+                    <p><strong>Protein:</strong> ${nutrition.summary.protein} | <strong>Carbs:</strong> ${nutrition.summary.carbs} | <strong>Fat:</strong> ${nutrition.summary.fat}</p>
+                </div>
+            `;
+
+            nutritionContent.innerHTML = html;
+
+            // Load recipes
+            const recipesGrid = document.getElementById('recipesGrid');
+            recipesGrid.innerHTML = nutrition.meals.map(meal => `
+                <div class="recipe-card">
+                    <h3 class="card-title">${meal.meal}</h3>
+                    <p>${meal.food}</p>
+                    <div class="video-placeholder" style="margin-top: 1rem; padding: 2rem; font-size: 1rem;">
+                        📹 ${meal.meal} Recipe Video Placeholder
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load Workouts
+        function loadWorkouts(workoutType) {
+            const workouts = workoutData[workoutType];
+            const workoutGrid = document.getElementById('workoutGrid');
+
+            let html = '';
+            for (const [day, exercises] of Object.entries(workouts)) {
+                html += `
+                    <div class="workout-card">
+                        <h3 class="card-title">${day}</h3>
+                        <ul class="workout-list">
+                `;
+
+                exercises.forEach((exercise, index) => {
+                    html += `
+                        <li class="workout-item" onclick="toggleWorkoutVideo(this)">
+                            <strong>${exercise.name}</strong> - ${exercise.sets}
+                            <div class="workout-video">
+                                <div class="video-placeholder" style="margin-top: 1rem; padding: 2rem;">
+                                    📹 ${exercise.name} Video Placeholder
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                });
+
+                html += `
+                        </ul>
+                    </div>
+                `;
+            }
+
+            workoutGrid.innerHTML = html;
+        }
+
+        // Toggle workout video
+        function toggleWorkoutVideo(element) {
+            const video = element.querySelector('.workout-video');
+            const allVideos = document.querySelectorAll('.workout-video');
+            const allItems = document.querySelectorAll('.workout-item');
+
+            allVideos.forEach(v => {
+                if (v !== video) {
+                    v.classList.remove('visible');
+                }
+            });
+
+            allItems.forEach(item => {
+                if (item !== element) {
+                    item.classList.remove('active');
+                }
+            });
+
+            video.classList.toggle('visible');
+            element.classList.toggle('active');
+        }
+
+        // Check if user exists
+        window.addEventListener('load', () => {
+            const userData = localStorage.getItem('dbrevUser');
+            if (userData) {
+                const user = JSON.parse(userData);
+                setTimeout(() => {
+                    showDashboard(user);
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
